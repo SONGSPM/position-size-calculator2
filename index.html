@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Position Size Calculator</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        panel: '#18181b',
+                        surface: '#202023',
+                        border: '#2f3035'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+
+    <div class="min-h-screen flex items-center justify-center p-6">
+
+        <main class="w-full max-w-6xl">
+
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-2">
+                            Trading Risk Management
+                        </p>
+
+                        <h1 class="text-3xl font-bold tracking-tight text-white">
+                            Position Size Calculator
+                        </h1>
+
+                        <p class="mt-2 text-zinc-400">
+                            Calculate position size based on your account risk and stop loss.
+                        </p>
+                    </div>
+
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-900 border border-zinc-800">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span class="text-xs text-zinc-400">Risk Engine Active</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- ========================= -->
+                <!-- INPUT PANEL -->
+                <!-- ========================= -->
+                <section class="bg-panel border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-lg font-semibold text-white">
+                                Position Size Calculation
+                            </h2>
+
+                            <p class="text-sm text-zinc-500 mt-1">
+                                Define your trading parameters
+                            </p>
+                        </div>
+
+                        <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-5 h-5 text-zinc-300"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 8c-1.657 0-3 1.343-3 3v1.5a3 3 0 0 0 6 0V11c0-1.657-1.343-3-3-3Zm0 0V5m0 14v-3m7-4a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+
+                        <!-- Balance -->
+                        <div>
+                            <label
+                                for="balance"
+                                class="block text-sm font-medium text-zinc-300 mb-2">
+                                Full Trading Balance ($)
+                            </label>
+
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                                    $
+                                </span>
+
+                                <input
+                                    id="balance"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="10,000"
+                                    class="w-full bg-surface border border-border rounded-xl px-9 py-3.5 text-white placeholder-zinc-600 outline-none transition focus:border-zinc-500 focus:ring-2 focus:ring-zinc-700"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Risk -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label
+                                    for="risk"
+                                    class="text-sm font-medium text-zinc-300">
+                                    Risk Level (%)
+                                </label>
+
+                                <span
+                                    id="riskHint"
+                                    class="text-xs text-zinc-500">
+                                    Max account risk
+                                </span>
+                            </div>
+
+                            <div class="relative">
+                                <input
+                                    id="risk"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="1"
+                                    class="w-full bg-surface border border-border rounded-xl px-4 py-3.5 pr-10 text-white placeholder-zinc-600 outline-none transition focus:border-zinc-500 focus:ring-2 focus:ring-zinc-700"
+                                >
+
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Leverage -->
+                        <div>
+                            <label
+                                for="leverage"
+                                class="block text-sm font-medium text-zinc-300 mb-2">
+                                Leverage (x)
+                            </label>
+
+                            <div class="relative">
+                                <input
+                                    id="leverage"
+                                    type="number"
+                                    min="1"
+                                    step="0.1"
+                                    placeholder="5"
+                                    class="w-full bg-surface border border-border rounded-xl px-4 py-3.5 pr-10 text-white placeholder-zinc-600 outline-none transition focus:border-zinc-500 focus:ring-2 focus:ring-zinc-700"
+                                >
+
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                                    x
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Stop Loss -->
+                        <div>
+                            <label
+                                for="stopLoss"
+                                class="block text-sm font-medium text-zinc-300 mb-2">
+                                Stop Loss (%)
+                            </label>
+
+                            <div class="relative">
+                                <input
+                                    id="stopLoss"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="2"
+                                    class="w-full bg-surface border border-border rounded-xl px-4 py-3.5 pr-10 text-white placeholder-zinc-600 outline-none transition focus:border-zinc-500 focus:ring-2 focus:ring-zinc-700"
+                                >
+
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button
+                            id="calculateBtn"
+                            type="button"
+                            class="w-full mt-2 bg-white hover:bg-zinc-200 active:bg-zinc-300 text-zinc-950 font-semibold rounded-xl py-3.5 transition duration-150 shadow-lg shadow-white/5">
+                            Calculate Position Size
+                        </button>
+
+                        <!-- Reset -->
+                        <button
+                            id="resetBtn"
+                            type="button"
+                            class="w-full text-sm text-zinc-500 hover:text-zinc-300 transition">
+                            Reset saved values
+                        </button>
+
+                    </div>
+                </section>
+
+
+                <!-- ========================= -->
+                <!-- OUTPUT PANEL -->
+                <!-- ========================= -->
+                <section class="bg-panel border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-white">
+                            Calculation Results
+                        </h2>
+
+                        <p class="text-sm text-zinc-500 mt-1">
+                            Your calculated trading parameters
+                        </p>
+                    </div>
+
+                    <!-- Main Position Size -->
+                    <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 mb-4">
+
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm text-zinc-400">
+                                Total Position Size
+                            </span>
+
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400">
+                                Notional
+                            </span>
+                        </div>
+
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-bold tracking-tight text-white"
+                                  id="positionSize">
+                                $0.00
+                            </span>
+                        </div>
+
+                        <div class="mt-4 h-1 rounded-full bg-zinc-800 overflow-hidden">
+                            <div
+                                id="riskBar"
+                                class="h-full bg-emerald-400 rounded-full transition-all duration-300"
+                                style="width: 0%">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Required Margin -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+                        <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-5">
+
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm text-zinc-400">
+                                    Required Margin
+                                </span>
+
+                                <span class="text-zinc-600">
+                                    $
+                                </span>
+                            </div>
+
+                            <div
+                                id="requiredMargin"
+                                class="text-2xl font-bold text-white">
+                                $0.00
+                            </div>
+
+                            <p class="text-xs text-zinc-600 mt-2">
+                                Position Size ÷ Leverage
+                            </p>
+                        </div>
+
+
+                        <!-- Max Loss -->
+                        <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-5">
+
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm text-zinc-400">
+                                    Max Loss
+                                </span>
+
+                                <span class="text-zinc-600">
+                                    ↓
+                                </span>
+                            </div>
+
+                            <div
+                                id="maxLoss"
+                                class="text-2xl font-bold text-red-400">
+                                $0.00
+                            </div>
+
+                            <p class="text-xs text-zinc-600 mt-2">
+                                Loss at Stop Loss
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Calculation Breakdown -->
+                    <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-5">
+
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-zinc-300">
+                                Calculation Breakdown
+                            </h3>
+
+                            <span class="text-xs text-zinc-600">
+                                Risk Model
+                            </span>
+                        </div>
+
+                        <div class="space-y-3 text-sm">
+
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">
+                                    Account Risk
+                                </span>
+
+                                <span
+                                    id="accountRisk"
+                                    class="text-zinc-300 font-medium">
+                                    $0.00
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">
+                                    Stop Loss
+                                </span>
+
+                                <span
+                                    id="displayStopLoss"
+                                    class="text-zinc-300 font-medium">
+                                    0.00%
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">
+                                    Leverage
+                                </span>
+
+                                <span
+                                    id="displayLeverage"
+                                    class="text-zinc-300 font-medium">
+                                    0.00x
+                                </span>
+                            </div>
+
+                            <div class="border-t border-zinc-800 pt-3 mt-3 flex justify-between">
+                                <span class="text-zinc-400">
+                                    Margin / Balance
+                                </span>
+
+                                <span
+                                    id="marginPercent"
+                                    class="text-zinc-300 font-semibold">
+                                    0.00%
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Warning -->
+                    <div
+                        id="warning"
+                        class="hidden mt-4 rounded-xl border border-amber-900/50 bg-amber-950/20 px-4 py-3 text-sm text-amber-400">
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- Footer -->
+            <footer class="mt-6 text-center text-xs text-zinc-700">
+                Position Size Calculator • Risk-based Position Sizing
+            </footer>
+
+        </main>
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================= -->
+    <script>
+        (() => {
+            'use strict';
+
+            const STORAGE_KEY = 'positionSizeCalculator';
+
+            const elements = {
+                balance: document.getElementById('balance'),
+                risk: document.getElementById('risk'),
+                leverage: document.getElementById('leverage'),
+                stopLoss: document.getElementById('stopLoss'),
+
+                positionSize: document.getElementById('positionSize'),
+                requiredMargin: document.getElementById('requiredMargin'),
+                maxLoss: document.getElementById('maxLoss'),
+
+                accountRisk: document.getElementById('accountRisk'),
+                displayStopLoss: document.getElementById('displayStopLoss'),
+                displayLeverage: document.getElementById('displayLeverage'),
+                marginPercent: document.getElementById('marginPercent'),
+
+                riskBar: document.getElementById('riskBar'),
+                warning: document.getElementById('warning'),
+
+                calculateBtn: document.getElementById('calculateBtn'),
+                resetBtn: document.getElementById('resetBtn')
+            };
+
+
+            /**
+             * Format USD
+             */
+            function formatUSD(value) {
+                if (!Number.isFinite(value)) {
+                    return '$0.00';
+                }
+
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+
+            /**
+             * Format percentage
+             */
+            function formatPercent(value) {
+                if (!Number.isFinite(value)) {
+                    return '0.00%';
+                }
+
+                return `${value.toFixed(2)}%`;
+            }
+
+
+            /**
+             * Get numeric input
+             */
+            function getNumber(element) {
+                const value = Number.parseFloat(element.value);
+
+                return Number.isFinite(value) ? value : 0;
+            }
+
+
+            /**
+             * Save values to LocalStorage
+             */
+            function saveValues() {
+                const data = {
+                    balance: elements.balance.value,
+                    risk: elements.risk.value,
+                    leverage: elements.leverage.value,
+                    stopLoss: elements.stopLoss.value
+                };
+
+                try {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(data)
+                    );
+                } catch (error) {
+                    // Ignore storage errors gracefully.
+                }
+            }
+
+
+            /**
+             * Load values from LocalStorage
+             */
+            function loadValues() {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+
+                    if (!saved) {
+                        return;
+                    }
+
+                    const data = JSON.parse(saved);
+
+                    if (typeof data !== 'object' || data === null) {
+                        return;
+                    }
+
+                    if (data.balance !== undefined) {
+                        elements.balance.value = data.balance;
+                    }
+
+                    if (data.risk !== undefined) {
+                        elements.risk.value = data.risk;
+                    }
+
+                    if (data.leverage !== undefined) {
+                        elements.leverage.value = data.leverage;
+                    }
+
+                    if (data.stopLoss !== undefined) {
+                        elements.stopLoss.value = data.stopLoss;
+                    }
+
+                } catch (error) {
+                    // Ignore corrupted storage data.
+                }
+            }
+
+
+            /**
+             * Reset calculator
+             */
+            function resetCalculator() {
+
+                elements.balance.value = '';
+                elements.risk.value = '';
+                elements.leverage.value = '';
+                elements.stopLoss.value = '';
+
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                } catch (error) {
+                    // Ignore storage errors.
+                }
+
+                calculate();
+            }
+
+
+            /**
+             * Show warning
+             */
+            function showWarning(message) {
+                elements.warning.textContent = message;
+                elements.warning.classList.remove('hidden');
+            }
+
+
+            /**
+             * Hide warning
+             */
+            function hideWarning() {
+                elements.warning.textContent = '';
+                elements.warning.classList.add('hidden');
+            }
+
+
+            /**
+             * Main calculation
+             *
+             * Account Risk ($)
+             *     = Trading Balance × Risk %
+             *
+             * Position Size ($)
+             *     = Account Risk ($) ÷ Stop Loss %
+             *
+             * Required Margin ($)
+             *     = Position Size ÷ Leverage
+             *
+             * Max Loss ($)
+             *     = Position Size × Stop Loss %
+             */
+            function calculate() {
+
+                const balance = getNumber(elements.balance);
+                const riskPercent = getNumber(elements.risk);
+                const leverage = getNumber(elements.leverage);
+                const stopLossPercent = getNumber(elements.stopLoss);
+
+                hideWarning();
+
+                // Basic validation
+                if (
+                    balance <= 0 ||
+                    riskPercent <= 0 ||
+                    leverage <= 0 ||
+                    stopLossPercent <= 0
+                ) {
+                    updateOutput({
+                        positionSize: 0,
+                        requiredMargin: 0,
+                        maxLoss: 0,
+                        accountRisk: 0,
+                        marginPercent: 0
+                    });
+
+                    return;
+                }
+
+
+                // Risk amount in dollars
+                const accountRisk =
+                    balance * (riskPercent / 100);
+
+
+                // Position Size
+                const positionSize =
+                    accountRisk / (stopLossPercent / 100);
+
+
+                // Required Margin
+                const requiredMargin =
+                    positionSize / leverage;
+
+
+                // Actual maximum loss
+                const maxLoss =
+                    positionSize * (stopLossPercent / 100);
+
+
+                // Margin as % of account
+                const marginPercent =
+                    (requiredMargin / balance) * 100;
+
+
+                // Validate risk percentage
+                if (riskPercent > 100) {
+                    showWarning(
+                        'Risk Level cannot exceed 100% of the trading balance.'
+                    );
+                }
+
+
+                // Validate stop loss
+                if (stopLossPercent > 100) {
+                    showWarning(
+                        'Stop Loss cannot exceed 100%.'
+                    );
+                }
+
+
+                // Margin warning
+                if (requiredMargin > balance) {
+                    showWarning(
+                        'Required Margin exceeds your trading balance. Consider increasing leverage or reducing position size.'
+                    );
+                }
+
+
+                updateOutput({
+                    positionSize,
+                    requiredMargin,
+                    maxLoss,
+                    accountRisk,
+                    marginPercent
+                });
+
+                saveValues();
+            }
+
+
+            /**
+             * Update output UI
+             */
+            function updateOutput(data) {
+
+                elements.positionSize.textContent =
+                    formatUSD(data.positionSize);
+
+                elements.requiredMargin.textContent =
+                    formatUSD(data.requiredMargin);
+
+                elements.maxLoss.textContent =
+                    formatUSD(data.maxLoss);
+
+                elements.accountRisk.textContent =
+                    formatUSD(data.accountRisk);
+
+                elements.displayStopLoss.textContent =
+                    formatPercent(
+                        getNumber(elements.stopLoss)
+                    );
+
+                elements.displayLeverage.textContent =
+                    `${getNumber(elements.leverage).toFixed(2)}x`;
+
+                elements.marginPercent.textContent =
+                    formatPercent(data.marginPercent);
+
+
+                // Risk bar
+                const riskPercent =
+                    getNumber(elements.risk);
+
+                const safeRiskBar =
+                    Math.min(Math.max(riskPercent, 0), 10);
+
+                elements.riskBar.style.width =
+                    `${safeRiskBar * 10}%`;
+            }
+
+
+            /**
+             * Event listeners
+             */
+            [
+                elements.balance,
+                elements.risk,
+                elements.leverage,
+                elements.stopLoss
+            ].forEach(input => {
+
+                input.addEventListener('input', () => {
+                    calculate();
+                });
+
+                input.addEventListener('change', () => {
+                    calculate();
+                });
+            });
+
+
+            elements.calculateBtn.addEventListener(
+                'click',
+                calculate
+            );
+
+
+            elements.resetBtn.addEventListener(
+                'click',
+                resetCalculator
+            );
+
+
+            /**
+             * Enter key = Calculate
+             */
+            document.addEventListener('keydown', event => {
+
+                if (
+                    event.key === 'Enter' &&
+                    document.activeElement.tagName === 'INPUT'
+                ) {
+                    calculate();
+                }
+            });
+
+
+            /**
+             * Initial load
+             */
+            loadValues();
+            calculate();
+
+        })();
+    </script>
+
+</body>
+</html>
